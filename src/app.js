@@ -53,27 +53,43 @@ app.delete('/todos/:todoId', ({ params }, res) => {
 
 //할일에 댓글 등록
 app.post('/todos/:todoId/comments', ({ params, body }, res) => {
-
+  const { todoId } = params
+  const comment = new Comment(body)
+  const commentListOfTodos = commentList[todoId] || []
+  commentListOfTodos.push(comment)
+  res.send(comment)
 })
 
 //할일의 댓글 목록
-app.get('/todos/:todoId/comments', (req, res) => {
-
+app.get('/todos/:todoId/comments', ({ params }, res) => {
+  const { todoId } = params
+  const commentListOfTodo = commentList[todoId] || []
+  res.send(commentListOfTodo)
 })
 
 //할일의 댓글 읽기
-app.get('/todos/:todoId/comments/:commentId', (req, res) => {
-
+app.get('/todos/:todoId/comments/:commentId', ({ params }, res) => {
+  const { todoId, commentId } = params
+  const commentListOfTodo = commentList[todoId] || []
+  res.send(commentListOfTodo.find(({ id }) => id === ~~commentId ))
 })
 
 //할일의 댓글 수정
-app.put('/todos/:todoId/comments/:commentId', (req, res) => {
-
+app.put('/todos/:todoId/comments/:commentId', ({ params, body }, res) => {
+  const { todoId, commentId } = params
+  const commentListOfTodo = commentList[todoId] || []
+  console.log(commentListOfTodo)
+  const comment = commentListOfTodo.find(({ id }) => id === ~~commentId )
+  // comment.put(body)
+  res.send(comment)
 })
 
 //할일의 댓글 삭제
-app.delete('/todos/:todoId/comments/:commentId', (req, res) => {
-
+app.delete('/todos/:todoId/comments/:commentId', ({ params }, res) => {
+  const { todoId, commentId } = params
+  const commentListOfTodo = commentList[todoId] || []
+  commentList[todoId] = commentListOfTodo.filter(({ id }) => id !== ~~commentId)
+  res.send({ msg: 'success' })
 })
 
 
