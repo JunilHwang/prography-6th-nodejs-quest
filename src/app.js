@@ -55,8 +55,8 @@ app.delete('/todos/:todoId', ({ params }, res) => {
 app.post('/todos/:todoId/comments', ({ params, body }, res) => {
   const { todoId } = params
   const comment = new Comment(body)
-  const commentListOfTodos = commentList[todoId] || []
-  commentListOfTodos.push(comment)
+  commentList[todoId] = commentList[todoId] || []
+  commentList[todoId].push(comment)
   res.send(comment)
 })
 
@@ -77,17 +77,16 @@ app.get('/todos/:todoId/comments/:commentId', ({ params }, res) => {
 //할일의 댓글 수정
 app.put('/todos/:todoId/comments/:commentId', ({ params, body }, res) => {
   const { todoId, commentId } = params
-  const commentListOfTodo = commentList[todoId] || []
-  console.log(commentListOfTodo)
+  const commentListOfTodo = commentList[todoId]
   const comment = commentListOfTodo.find(({ id }) => id === ~~commentId )
-  // comment.put(body)
+  comment.put(body)
   res.send(comment)
 })
 
 //할일의 댓글 삭제
 app.delete('/todos/:todoId/comments/:commentId', ({ params }, res) => {
   const { todoId, commentId } = params
-  const commentListOfTodo = commentList[todoId] || []
+  const commentListOfTodo = commentList[todoId]
   commentList[todoId] = commentListOfTodo.filter(({ id }) => id !== ~~commentId)
   res.send({ msg: 'success' })
 })
