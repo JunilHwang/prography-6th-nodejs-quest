@@ -1,6 +1,6 @@
-export const Todo = class {
+let lastId = 1
 
-  static lastId = 1
+export const Todo = class {
 
   id // 숫자, 자동 생성
   title // 문자열, 필수값
@@ -11,7 +11,7 @@ export const Todo = class {
   updatedAt // 날짜, 생성시 자동 생성, 수정시 자동 갱신,
 
   constructor ({ title, description, tags }) {
-    this.id = Todo.lastId++
+    this.id = lastId++
     this.title = title
     this.description = description
     this.tags = tags
