@@ -13,8 +13,8 @@ app.use('/hello-world', (req, res) => {
 })
 
 //할일 등록
-app.post('/todos', (req, res) => {
-  const todos = new Todo(req.body)
+app.post('/todos', ({ body }, res) => {
+  const todos = new Todo(body)
   todoList.push(todos)
   res.send(todos)
 })

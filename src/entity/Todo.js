@@ -24,5 +24,11 @@ export const Todo = class {
     if (title !== undefined) this.title = title
     if (description !== undefined) this.description = description
     if (tags !== undefined) this.tags = tags
+    this.updatedAt = Date.now()
+  }
+
+  complete () {
+    this.isCompleted = true
+    this.updatedAt = Date.now()
   }
 }
