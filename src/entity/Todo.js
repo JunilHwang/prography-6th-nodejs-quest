@@ -1,4 +1,3 @@
-let lastId = 1
 
 export const Todo = class {
 
@@ -11,13 +10,17 @@ export const Todo = class {
   updatedAt // 날짜, 생성시 자동 생성, 수정시 자동 갱신,
 
   constructor ({ title, description, tags }) {
-    this.id = lastId++
+    this.id = 0
     this.title = title
     this.description = description
     this.tags = tags
     this.isCompleted = false
     this.createdAt = Date.now()
     this.updatedAt = Date.now()
+  }
+
+  setId (id) {
+    this.id = id
   }
 
   put ({ title, description, tags }) {

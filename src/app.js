@@ -1,7 +1,7 @@
 import express from 'express';
 import { Todo, Comment } from './entity';
+import { todoRepository } from './repository';
 
-let todoList = []
 let commentList = []
 
 const app = express();
@@ -15,39 +15,43 @@ app.use('/hello-world', (req, res) => {
 //할일 등록
 app.post('/todos', ({ body }, res) => {
   const todos = new Todo(body)
-  todoList.push(todos)
+  todoRepository.save(todos)
   res.send(todos)
 })
 
 //할일 목록
 app.get('/todos', (req, res) => {
-  res.send(todoList)
+  res.send(todoRepository.findAll())
 })
 
 //할일 읽기
 app.get('/todos/:todoId', ({ params }, res) => {
-  res.send(
-    todoList.find(({ id }) => id === ~~params.todoId)
-  )
+  const { todoId } = params
+  res.send(todoRepository.find(todoId))
 })
 
 //할일 수정
 app.put('/todos/:todoId', ({ params, body }, res) => {
-  const todos = todoList.find(({ id }) => id === ~~params.todoId)
+  const { todoId } = params
+  const todos = todoRepository.find(todoId)
   todos.put(body)
+  todoRepository.save(todos)
   res.send(todos)
 })
 
 //할일 완료
 app.put('/todos/:todoId/complete', ({ params }, res) => {
-  const todos = todoList.find(({ id }) => id === ~~params.todoId)
+  const { todoId } = params
+  const todos = todoRepository.find(todoId)
   todos.complete()
+  todoRepository.save(todos)
   res.send({ msg: 'success' })
 })
 
 //할일 삭제
 app.delete('/todos/:todoId', ({ params }, res) => {
-  todoList = todoList.filter(({ id }) => id !== ~~params.todoId)
+  const { todoId } = params
+  todoRepository.remove(todoId)
   res.send({ msg: 'success' })
 })
 
