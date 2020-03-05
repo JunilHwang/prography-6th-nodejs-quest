@@ -1,8 +1,6 @@
-import express from 'express';
-import { Todo, Comment } from './entity';
-import { todoRepository } from './repository';
-
-let commentList = []
+import express from 'express'
+import { Todo, Comment } from './entity'
+import { commentRepository, todoRepository } from './repository'
 
 const app = express();
 
@@ -51,7 +49,8 @@ app.put('/todos/:todoId/complete', ({ params }, res) => {
 //할일 삭제
 app.delete('/todos/:todoId', ({ params }, res) => {
   const { todoId } = params
-  todoRepository.remove(todoId)
+  const todos = todoRepository.find(todoId)
+  todoRepository.remove(todos)
   res.send({ msg: 'success' })
 })
 
@@ -59,39 +58,36 @@ app.delete('/todos/:todoId', ({ params }, res) => {
 app.post('/todos/:todoId/comments', ({ params, body }, res) => {
   const { todoId } = params
   const comment = new Comment(body)
-  commentList[todoId] = commentList[todoId] || []
-  commentList[todoId].push(comment)
+  commentRepository.save(todoId, comment)
   res.send(comment)
 })
 
 //할일의 댓글 목록
 app.get('/todos/:todoId/comments', ({ params }, res) => {
   const { todoId } = params
-  const commentListOfTodo = commentList[todoId] || []
-  res.send(commentListOfTodo)
+  res.send(commentRepository.findAll(todoId))
 })
 
 //할일의 댓글 읽기
 app.get('/todos/:todoId/comments/:commentId', ({ params }, res) => {
   const { todoId, commentId } = params
-  const commentListOfTodo = commentList[todoId] || []
-  res.send(commentListOfTodo.find(({ id }) => id === ~~commentId ))
+  res.send(commentRepository.find(todoId, commentId))
 })
 
 //할일의 댓글 수정
 app.put('/todos/:todoId/comments/:commentId', ({ params, body }, res) => {
   const { todoId, commentId } = params
-  const commentListOfTodo = commentList[todoId]
-  const comment = commentListOfTodo.find(({ id }) => id === ~~commentId )
+  const comment = commentRepository.find(todoId, commentId)
   comment.put(body)
+  commentRepository.save(todoId, comment)
   res.send(comment)
 })
 
 //할일의 댓글 삭제
 app.delete('/todos/:todoId/comments/:commentId', ({ params }, res) => {
   const { todoId, commentId } = params
-  const commentListOfTodo = commentList[todoId]
-  commentList[todoId] = commentListOfTodo.filter(({ id }) => id !== ~~commentId)
+  const comment = commentRepository.find(todoId, commentId)
+  commentRepository.remove(todoId, comment)
   res.send({ msg: 'success' })
 })
 

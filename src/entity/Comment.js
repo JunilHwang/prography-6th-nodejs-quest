@@ -7,10 +7,14 @@ export const Comment = class  {
   updatedAt // 날짜, 생성시 자동 생성, 수정시 자동 갱신,
 
   constructor ({ contents }) {
+    this.id = 0
     this.contents = contents
-    this.id = lastId++
     this.createdAt = Date.now()
     this.updatedAt = Date.now()
+  }
+
+  setId (id) {
+    this.id = id
   }
 
   put ({ contents }) {
