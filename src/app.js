@@ -1,4 +1,8 @@
 import express from 'express';
+import { Todo, Comment } from './entity';
+
+let todoList = []
+let commentList = []
 
 const app = express();
 
@@ -10,36 +14,45 @@ app.use('/hello-world', (req, res) => {
 
 //할일 등록
 app.post('/todos', (req, res) => {
-
+  const todos = new Todo(req.body)
+  todoList.push(todos)
+  res.send(todos)
 })
 
 //할일 목록
 app.get('/todos', (req, res) => {
-
+  res.send(todoList)
 })
 
 //할일 읽기
-app.get('/todos/:todoId', (req, res) => {
-
+app.get('/todos/:todoId', ({ params }, res) => {
+  res.send(
+    todoList.find(({ id }) => id === ~~params.todoId)
+  )
 })
 
 //할일 수정
-app.put('/todos/:todoId', (req, res) => {
-
+app.put('/todos/:todoId', ({ params, body }, res) => {
+  const todos = todoList.find(({ id }) => id === ~~params.todoId)
+  todos.put(body)
+  res.send(todos)
 })
 
 //할일 완료
-app.put('/todos/:todoId/complete', (req, res) => {
-
+app.put('/todos/:todoId/complete', ({ params }, res) => {
+  const todos = todoList.find(({ id }) => id === ~~params.todoId)
+  todos.complete()
+  res.send({ msg: 'success' })
 })
 
 //할일 삭제
-app.delete('/todos/:todoId', (req, res) => {
-
+app.delete('/todos/:todoId', ({ params }, res) => {
+  todoList = todoList.filter(({ id }) => id !== ~~params.todoId)
+  res.send({ msg: 'success' })
 })
 
 //할일에 댓글 등록
-app.post('/todos/:todoId/comments', (req, res) => {
+app.post('/todos/:todoId/comments', ({ params, body }, res) => {
 
 })
 

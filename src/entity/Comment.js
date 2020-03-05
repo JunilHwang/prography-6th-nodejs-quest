@@ -3,4 +3,13 @@ export const Comment = class  {
   contents // 문자열, 필수값
   createdAt // 날짜, 생성시 자동 생성
   updatedAt // 날짜, 생성시 자동 생성, 수정시 자동 갱신,
+
+  static lastId = 1
+
+  constructor (contents) {
+    this.contents = contents
+    this.id = Comment.lastId++
+    this.createdAt = Date.now()
+    this.updatedAt = Date.now()
+  }
 }
